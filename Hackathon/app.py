@@ -108,6 +108,8 @@ def get_tventilator_data():
            ventilator_for_chris.append(timepoints['processed']['MVe'])
         elif measurement == 'Co2':
             ventilator_for_chris.append(timepoints['raw']['CO2'])
+        elif measurement == 'frequency':
+            ventilator_for_chris.append(timepoints['processed']['frequency'])
         else: return "Measure "+measurement+" not supported."
     return json.dumps({"timestamps": timestamps, "measurements": ventilator_for_chris})
 
