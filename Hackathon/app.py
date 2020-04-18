@@ -85,8 +85,8 @@ def get_patient_list():
    #
     #return patients
 
-@app.route('/data')
-def get_ventilator_data():
+@app.route('/tdata')
+def get_tventilator_data():
     global ventilators
     ventilator_for_chris = []
     patientid = int(request.args.get('patientid'))
@@ -111,6 +111,29 @@ def get_ventilator_data():
         else: return "Measure "+measurement+" not supported."
     return json.dumps({"timestamps": timestamps, "measurements": ventilator_for_chris})
 
+@app.route('/data')
+def get_ventilator_data():
+    global ventilators
+    ventilator_for_chris = []
+    patientid = int(request.args.get('patientid'))
+    measurement = request.args.get('measurement')
+    seconds = int(request.args.get('seconds'))
+    print(patientid, measurement, seconds)
+    all_about_ventilator = None
+    for p in map_patients_to_ventilator:
+        if p.id == patientid:
+            all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(seconds)
+    if all_about_ventilator is None:
+        return "Patient "+str(patientid)+" not found"
+    for timepoints in all_about_ventilator:
+        if measurement == 'O2':
+           ventilator_for_chris.append(timepoints['raw']['O2'])
+        elif measurement == 'MVe':
+           ventilator_for_chris.append(timepoints['processed']['MVe'])
+        elif measurement == 'Co2':
+            ventilator_for_chris.append(timepoints['raw']['CO2'])
+        else: return "Measure "+measurement+" not supported."
+    return json.dumps(ventilator_for_chris)
 
 @app.route('/patient_by_id')
 def get_patient_by_id():
