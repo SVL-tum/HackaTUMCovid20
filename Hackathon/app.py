@@ -34,9 +34,9 @@ def serialize(obj):
         serial = obj.isoformat()
         return serial
 
-    if isinstance(obj, time):
-        serial = obj.isoformat()
-        return serial
+    #if isinstance(obj, time):
+    #    serial = obj.isoformat()
+    #    return serial
 
     if isinstance(obj, datetime):
         serial = obj.isoformat()
