@@ -11,7 +11,7 @@ from collections import OrderedDict
 from _thread import start_new_thread
 
 #link to communicate externally: http://129.187.212.1:5000/patient?sorting=rscore
-#Link to communicate internally: curl localhost:5001/data?"patientid=1000&seconds=300&measurement==O2"
+#Link to communicate internally: curl localhost:5001/data?"patientid=1000&seconds=300&measurement=O2"
 
 app = Flask(__name__)
 
@@ -99,7 +99,9 @@ def get_ventilator_data():
             all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(seconds)
     if all_about_ventilator is None:
         return "Patient "+str(patientid)+" not found"
+    timestamps = []
     for timepoints in all_about_ventilator:
+        timestamps.append(timepoints['time'])
         if measurement == 'O2':
            ventilator_for_chris.append(timepoints['raw']['O2'])
         elif measurement == 'MVe':
@@ -107,7 +109,7 @@ def get_ventilator_data():
         elif measurement == 'Co2':
             ventilator_for_chris.append(timepoints['raw']['CO2'])
         else: return "Measure "+measurement+" not supported."
-    return json.dumps(ventilator_for_chris)
+    return json.dumps({"timestamps": timestamps, "measurements": ventilator_for_chris})
 
 
 @app.route('/patient_by_id')
