@@ -110,6 +110,18 @@ def get_ventilator_data():
     return json.dumps(ventilator_for_chris)
 
 
+@app.route('/patient_by_id')
+def get_patient_by_id():
+    global patients
+    patientid = int(request.args.get('patientid'))
+    for p in patients:
+        if p.id == patientid:
+            return json.dumps(p, default=lambda o: o.__dict__)
+    return 'patient not found'
+
+
+
+
 ## how to run in terminal
 # export PYTHONPATH="/home/svea/Desktop/Wo_der_server_lauft/HackaTUMCovid20/"
 # source ./Hackathon/venv/bin/activate
