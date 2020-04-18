@@ -8,15 +8,18 @@ Dies ist eine temporäre Skriptdatei.
 # HackaTUM Infineon Projekt
 import numpy as np
 import matplotlib.pyplot as plt
-import jason
+import json
+import requests
 
 
+print("Hello World")
 
 # 1.Data Mining [json]
+r = requests.get('http://api.theopenvent.com/exampledata/v2/data')
+data = r.json()#json.loads("data.json")
 
-data = json.loads(mockup_data)
 # converts object into dict, array into list, null into none ...
-for key in data[mockup_data]:
+for key in data:
     print(key['time'])
     
 # 2.Data Cleaning [numpy, pandas]

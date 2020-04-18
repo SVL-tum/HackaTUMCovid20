@@ -15,14 +15,19 @@ class Ventilator:
 
     def severity_score(self):
         last_entry = self.data
-
         # Calculate patient serverity
         # Content docs: http://api.theopenvent.com/exampledata/v2/doku
 
         #TODO
         print("Debug here")
-        pass
+        return 1
 
+
+def get_ventilators():
+    ventilator_list = []
+    for i in range(8):
+        ventilator_list.append(Ventilator(4242))
+    return ventilator_list
 
 if __name__ == "__main__":
     v = Ventilator(4242)
