@@ -73,7 +73,7 @@ def get_patient_list():
     global map_patients
     global serialize
     for p in map_patients_to_ventilator:
-        p.set_severity(map_patients_to_ventilator[p].severity_score())
+        p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
     patients_new = patients
     if sorting == 'rscore':
         patients_new = sorted(patients, key=lambda patient: patient.rscore, reverse=True)
@@ -148,10 +148,12 @@ def get_patient_by_id():
     patientid = int(request.args.get('patientid'))
     for p in patients:
         if p.id == patientid:
-            p.set_severity(map_patients_to_ventilator[p].severity_score())
+            p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
             return json.dumps(p, default=lambda o: o.__dict__)
     return 'patient not found'
 
+
+@app.route()
 
 
 
