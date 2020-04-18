@@ -42,13 +42,17 @@ for venid in ventilator_ids:
 
 def continous_update_of_ventilators():
     while 1==1:
+
       sleep(0.5)
-      r = requests.get('https://api.theopenvent.com/exampledata/v2/data', verify=False)
-      data = r.json()
-      for key in data:
-         for v in ventilators:
-            if data[key]['device_id'] == v.id:
-                    v.add_data(data[key])
+      try:
+          r = requests.get('https://api.theopenvent.com/exampledata/v2/data', verify=False)
+          data = r.json()
+          for key in data:
+             for v in ventilators:
+                if data[key]['device_id'] == v.id:
+                        v.add_data(data[key])
+      except Exception as ex:
+          print(ex)
 
 start_new_thread(continous_update_of_ventilators, ())
 
@@ -69,7 +73,7 @@ def get_patient_list():
     global map_patients
     global serialize
     for p in map_patients_to_ventilator:
-        p.set_severity(map_patients_to_ventilator[p].severity_score())
+        p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
     patients_new = patients
     if sorting == 'rscore':
         patients_new = sorted(patients, key=lambda patient: patient.rscore, reverse=True)
