@@ -103,6 +103,10 @@ def get_ventilator_data():
     return ventilator_for_chris
 
 
+## how to run in terminal
+# export PYTHONPATH="/home/svea/Desktop/Wo_der_server_lauft/HackaTUMCovid20/"
+# source ./Hackathon/venv/bin/activate
+# python Hackathon/app.py
 
 # Does not execute this
 #From terminal, we need export PYTHONPATH="/home/svea/Desktop/HackaTUMCovid20;/home/svea/Desktop/HackaTUMCovid20/Hackathon"
