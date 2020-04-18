@@ -113,7 +113,7 @@ class Ventilator:
                 else:
                     score = 2
 
-        return [score_total, criticalList]
+        return [score, criticalList]
 
         #return random.randint(0, 2)
         #return len(self.data)

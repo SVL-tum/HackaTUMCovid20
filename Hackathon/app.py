@@ -107,13 +107,13 @@ def get_tventilator_data():
     for timepoints in all_about_ventilator:
         timestamps.append(timepoints['time'])
         if measurement == 'O2':
-           ventilator_for_chris.append(timepoints['raw']['O2'])
+           ventilator_for_chris.append(float(timepoints['raw']['O2']))
         elif measurement == 'MVe':
-           ventilator_for_chris.append(str(timepoints['processed']['MVe']))
+           ventilator_for_chris.append(float(timepoints['processed']['MVe']))
         elif measurement == 'Co2':
-            ventilator_for_chris.append(timepoints['raw']['CO2'])
+            ventilator_for_chris.append(float(timepoints['raw']['CO2']))
         elif measurement == 'frequency':
-            ventilator_for_chris.append(timepoints['processed']['frequency'])
+            ventilator_for_chris.append(float(timepoints['processed']['frequency']))
         else: return "Measure "+measurement+" not supported."
     return json.dumps({"timestamps": timestamps, "measurements": ventilator_for_chris})
 
@@ -135,9 +135,9 @@ def get_ventilator_data():
         if measurement == 'O2':
            ventilator_for_chris.append(timepoints['raw']['O2'])
         elif measurement == 'MVe':
-           ventilator_for_chris.append(str(timepoints['processed']['MVe']))
+           ventilator_for_chris.append(float(timepoints['processed']['MVe']))
         elif measurement == 'Co2':
-            ventilator_for_chris.append(timepoints['raw']['CO2'])
+            ventilator_for_chris.append(float(timepoints['raw']['CO2']))
         else: return "Measure "+measurement+" not supported."
     return json.dumps(ventilator_for_chris)
 
@@ -153,8 +153,15 @@ def get_patient_by_id():
     return 'patient not found'
 
 
+@app.route('/ventilator_by_patienid')
+def get_ventilator():
+    global ventilators
+    patientid = int(request.args.get('patientid'))
+    for p in map_patients_to_ventilator:
+        if p.id == patientid:
+            all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(1)
 
-
+    return json.dumps(all_about_ventilator, default=lambda o: o.__dict__)
 
 
 ## how to run in terminal
