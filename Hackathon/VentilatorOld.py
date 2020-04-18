@@ -23,19 +23,29 @@ class Ventilator:
         # Content docs:
 
         return random.randint(0, 2)
+        #return len(self.data)
+
+    def get_last_seconds(self, number_of_sec):
+        iter = reversed(self.data)
+        results = []
+        for i in range(min(number_of_sec, len(self.data))):
+            results.append(self.data[next(iter)])
+
+        results.reverse()
+        return  results
 
 
 
 if __name__ == "__main__":
-    for venid in list:
-        v = Ventilator(venid)
+        v = Ventilator(4242)
         for i in range(10):
             sleep(0.5)
-            r = requests.get('http://api.theopenvent.com/exampledata/v2/data')
+            r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)
             data = r.json()
 
             for key in data:
                 if data[key]['device_id'] == v.id:
                     v.add_data(data[key])
 
-        v.severity_score()
+        test = v.get_last_seconds(4)
+        print(test)
