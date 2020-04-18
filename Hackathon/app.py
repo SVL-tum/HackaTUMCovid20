@@ -173,7 +173,7 @@ def get_ventilator_data():
         return "Patient " + str(patientid) + " not found"
     for timepoints in all_about_ventilator:
         if measurement == 'O2':
-            ventilator_for_chris.append(timepoints['raw']['O2'])
+            ventilator_for_chris.append(timepoints['processed']['ExpiredO2'])
         elif measurement == 'MVe':
             ventilator_for_chris.append(float(timepoints['processed']['MVe']))
         elif measurement == 'Co2':

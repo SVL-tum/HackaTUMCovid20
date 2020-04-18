@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from time import sleep
+import numpy as np
 from typing import Dict
 import random
 
@@ -8,20 +9,24 @@ import requests
 
 class Ventilator:
     def __init__(self, id):
-        self.id: str = id
+        self.id = id
         self.data = OrderedDict()
+        self.counter = 0
 
     def add_data(self, json):
+        #if self.id == 4242:
+         #   json['processed']['ExpiredO2'] = json['processed']['ExpiredO2']*(np.sin(self.counter)+3)*0.5
+          #  self.counter += 0.1
         self.data[json['time']] = json
 
     def severity_score(self):
         # Get the most recent entry of the ventilator data
         if len(self.data) > 0:
             last_entry = self.data[next(reversed(self.data))]
-            MVe = last_entry['processed']['MVe']
-            ExpiredCO2 = last_entry['processed']['ExpiredCO2']
-            ExpiredO2 = last_entry['processed']['ExpiredO2']
-            frequency = last_entry['processed']['frequency']
+            MVe = int(last_entry['processed']['MVe'])
+            ExpiredCO2 = int(last_entry['processed']['ExpiredCO2'])
+            ExpiredO2 = int(last_entry['processed']['ExpiredO2'])
+            frequency = int(last_entry['processed']['frequency'])
             # pressure = last_entry['processed']['pressure']
 
             criticalList = []
@@ -67,10 +72,10 @@ class Ventilator:
 
                 # FiO2 = last_entry['processed']['triggerSettings'] ['FiO2']
             # IE = last_entry['processed']['triggerSettings'] ['IE']
-            PEEP = last_entry['processed']['triggerSettings']['PEEP']
-            RR = last_entry['processed']['triggerSettings']['RR']
-            VT = last_entry['processed']['triggerSettings']['VT']
-            pressure_max = last_entry['processed']['triggerSettings']['pressure_max']
+            PEEP = int(last_entry['processed']['triggerSettings']['PEEP'])
+            RR = int(last_entry['processed']['triggerSettings']['RR'])
+            VT = int(last_entry['processed']['triggerSettings']['VT'])
+            pressure_max = int(last_entry['processed']['triggerSettings']['pressure_max'])
             # volumePerMinute = last_entry['processed'] ['ventilationMode'] ['volumePerMinute']
 
             if PEEP < 5:
@@ -128,7 +133,7 @@ class Ventilator:
 ventilator_ids = [4242, 3089, 12693, 93, 586]
 
 if __name__ == "__main__":
-        v = Ventilator(586)
+        v = Ventilator(1000)
         for i in range(1):
             sleep(0.5)
             r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)
