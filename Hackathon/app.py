@@ -138,9 +138,11 @@ def get_ventilator_data():
 @app.route('/patient_by_id')
 def get_patient_by_id():
     global patients
+    global map_patients_to_ventilator
     patientid = int(request.args.get('patientid'))
     for p in patients:
         if p.id == patientid:
+            p.set_severity(map_patients_to_ventilator[p].severity_score())
             return json.dumps(p, default=lambda o: o.__dict__)
     return 'patient not found'
 
