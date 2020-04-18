@@ -173,7 +173,7 @@ def get_patient_by_id():
         if p.id == patientid:
             p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
             p.set_delta()
-            return json.dumps(p, default=lambda o: o.serialize)
+            return json.dumps(p, default=serialize)
     return 'patient not found'
 
 
@@ -185,7 +185,7 @@ def get_ventilator():
         if p.id == patientid:
             all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(1)
 
-    return json.dumps(all_about_ventilator, default=lambda o: o.serialize)
+    return json.dumps(all_about_ventilator, default=serialize)
 
 
 @app.route('/backflip')
