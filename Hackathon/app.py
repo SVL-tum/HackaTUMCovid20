@@ -1,3 +1,4 @@
+import sys
 from datetime import date, time
 
 from flask import Flask, request
@@ -9,7 +10,8 @@ from Hackathon import VentilatorOld as Ventilator
 from collections import OrderedDict
 from _thread import start_new_thread
 
-
+#link to communicate externally: http://129.187.212.1:5000/patient?sorting=rscore
+#Link to communicate internally: curl localhost:5001/data?"patientid=1000&seconds=300&measurement==O2"
 
 app = Flask(__name__)
 
@@ -87,20 +89,25 @@ def get_patient_list():
 def get_ventilator_data():
     global ventilators
     ventilator_for_chris = []
-    patientid = request.args.get('patientid')
+    patientid = int(request.args.get('patientid'))
     measurement = request.args.get('measurement')
-    seconds = request.args.get('seconds')
+    seconds = int(request.args.get('seconds'))
+    print(patientid, measurement, seconds)
+    all_about_ventilator = None
     for p in map_patients_to_ventilator:
         if p.id == patientid:
             all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(seconds)
+    if all_about_ventilator is None:
+        return "Patient "+str(patientid)+" not found"
     for timepoints in all_about_ventilator:
         if measurement == 'O2':
            ventilator_for_chris.append(timepoints['raw']['O2'])
-        if measurement == 'MVe':
+        elif measurement == 'MVe':
            ventilator_for_chris.append(timepoints['processed']['MVe'])
-        if measurement == 'Co2':
+        elif measurement == 'Co2':
             ventilator_for_chris.append(timepoints['raw']['CO2'])
-    return ventilator_for_chris
+        else: return "Measure "+measurement+" not supported."
+    return json.dumps(ventilator_for_chris)
 
 
 ## how to run in terminal
@@ -110,7 +117,11 @@ def get_ventilator_data():
 
 # Does not execute this
 #From terminal, we need export PYTHONPATH="/home/svea/Desktop/HackaTUMCovid20;/home/svea/Desktop/HackaTUMCovid20/Hackathon"
+
 if __name__ == '__main__':
-    print("hi")
-    app.run(host='0.0.0.0')
+    args = sys.argv
+    if "debug" in args:
+        app.run(host='0.0.0.0', port=5001)
+    else:
+        app.run(host='0.0.0.0')
 
