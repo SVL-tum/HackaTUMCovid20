@@ -113,7 +113,7 @@ class Ventilator:
                 else:
                     score = 2
 
-        return [score, criticalList]
+        return [score_total, criticalList]
 
         #return random.randint(0, 2)
         #return len(self.data)
@@ -125,12 +125,13 @@ class Ventilator:
             results.append(self.data[next(iter)])
 
         results.reverse()
-        return  results
+        return results
 
 
+ventilator_ids = [4242, 3089, 12693, 93, 586]
 
 if __name__ == "__main__":
-        v = Ventilator(4242)
+        v = Ventilator(586)
         for i in range(1):
             sleep(0.5)
             r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)

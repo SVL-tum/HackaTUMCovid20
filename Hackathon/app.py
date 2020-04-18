@@ -109,7 +109,7 @@ def get_tventilator_data():
         if measurement == 'O2':
            ventilator_for_chris.append(timepoints['raw']['O2'])
         elif measurement == 'MVe':
-           ventilator_for_chris.append(timepoints['processed']['MVe'])
+           ventilator_for_chris.append(str(timepoints['processed']['MVe']))
         elif measurement == 'Co2':
             ventilator_for_chris.append(timepoints['raw']['CO2'])
         elif measurement == 'frequency':
@@ -135,7 +135,7 @@ def get_ventilator_data():
         if measurement == 'O2':
            ventilator_for_chris.append(timepoints['raw']['O2'])
         elif measurement == 'MVe':
-           ventilator_for_chris.append(timepoints['processed']['MVe'])
+           ventilator_for_chris.append(str(timepoints['processed']['MVe']))
         elif measurement == 'Co2':
             ventilator_for_chris.append(timepoints['raw']['CO2'])
         else: return "Measure "+measurement+" not supported."
@@ -153,7 +153,7 @@ def get_patient_by_id():
     return 'patient not found'
 
 
-@app.route()
+
 
 
 
