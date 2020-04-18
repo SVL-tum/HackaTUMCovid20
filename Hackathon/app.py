@@ -73,7 +73,7 @@ def get_patient_list():
     global map_patients
     global serialize
     for p in map_patients_to_ventilator:
-        p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
+        p.set_severity(map_patients_to_ventilator[p].severity_score())
     patients_new = patients
     if sorting == 'rscore':
         patients_new = sorted(patients, key=lambda patient: patient.rscore, reverse=True)
