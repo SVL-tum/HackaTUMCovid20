@@ -1,5 +1,5 @@
 import sys
-from datetime import date, time
+from datetime import date, time, timedelta
 
 from flask import Flask, request
 import json
@@ -9,7 +9,7 @@ from Hackathon import Patient
 from Hackathon import VentilatorOld as Ventilator
 from collections import OrderedDict
 from _thread import start_new_thread
-
+from datetime import datetime
 #link to communicate externally: http://129.187.212.1:5000/patient?sorting=rscore
 #Link to communicate internally: curl localhost:5001/data?"patientid=1000&seconds=300&measurement=O2"
 
@@ -22,6 +22,27 @@ print(x)
 
 patients = Patient.get_patients()
 
+## ?
+def serialize(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, date):
+        serial = obj.isoformat()
+        return serial
+
+    if isinstance(obj, time):
+        serial = obj.isoformat()
+        return serial
+
+    if isinstance(obj, datetime):
+        serial = obj.isoformat()
+        return serial
+
+    if isinstance(obj, timedelta):
+        serial = obj.total_seconds()
+        return serial
+
+    return obj.__dict__
 
 ## get ventilators
 ventilator_ids = [4242, 3089, 12693, 93, 586]
@@ -64,7 +85,6 @@ for idx, p in enumerate(patients):
     map_ventilators_to_patients[ventilators[idx]] = p
 
 
-counter = 0
 
 @app.route('/patient')
 def get_patient_list():
@@ -74,6 +94,7 @@ def get_patient_list():
     global serialize
     for p in map_patients_to_ventilator:
         p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
+        p.set_delta()
     patients_new = patients
     if sorting == 'rscore':
         patients_new = sorted(patients, key=lambda patient: patient.rscore, reverse=True)
@@ -81,8 +102,10 @@ def get_patient_list():
         patients_new = sorted(patients, key=lambda patient: patient.severity, reverse=True)
     elif sorting == 'age':
         patients_new = sorted(patients, key=lambda patient: patient.age, reverse=True)
+    elif sorting == 'delta':
+        patients_new = sorted(patients, key=lambda patient: patient.delta, reverse=True)
 
-    return json.dumps(patients_new, default=lambda o: o.__dict__)
+    return json.dumps(patients_new, default=serialize)
 
    # user = request.args.get('name')
 
@@ -149,7 +172,8 @@ def get_patient_by_id():
     for p in patients:
         if p.id == patientid:
             p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
-            return json.dumps(p, default=lambda o: o.__dict__)
+            p.set_delta()
+            return json.dumps(p, default=lambda o: o.serialize)
     return 'patient not found'
 
 
@@ -161,8 +185,18 @@ def get_ventilator():
         if p.id == patientid:
             all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(1)
 
-    return json.dumps(all_about_ventilator, default=lambda o: o.__dict__)
+    return json.dumps(all_about_ventilator, default=lambda o: o.serialize)
 
+
+@app.route('/backflip')
+def change_state():
+    global patients
+    patientid = int(request.args.get('patientid'))
+    for p in patients:
+        if p.id == patientid:
+            p.change_state()
+            p.set_delta()
+    return "changed state"
 
 ## how to run in terminal
 # export PYTHONPATH="/home/svea/Desktop/Wo_der_server_lauft/HackaTUMCovid20/"
