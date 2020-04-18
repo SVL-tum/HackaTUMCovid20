@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from time import sleep
 from typing import Dict
+import random
 
 import requests
 
@@ -21,7 +22,7 @@ class Ventilator:
         # Calculate patient serverity
         # Content docs:
 
-        return len(self.data)
+        return random.randint(0, 2)
 
 
 

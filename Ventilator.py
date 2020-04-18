@@ -15,6 +15,9 @@ class Ventilator:
 
     def severity_score(self):
         last_entry = self.data
+        trigger_setting_for_Fio2 = last_entry['processed']['triggerSettings']['FiO2']
+        print(f'trigger Setting for FIO2= {trigger_setting_for_Fio2}')
+
         # Calculate patient serverity
         # Content docs: http://api.theopenvent.com/exampledata/v2/doku
 
@@ -31,7 +34,7 @@ def get_ventilators():
 
 if __name__ == "__main__":
     v = Ventilator(4242)
-    r = requests.get('http://api.theopenvent.com/exampledata/v2/data')
+    r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)
     data = r.json()
 
     for key in data:
