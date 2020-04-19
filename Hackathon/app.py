@@ -14,14 +14,11 @@ from _thread import start_new_thread
 from datetime import datetime
 
 # link to communicate externally: http://129.187.212.1:5000/patient?sorting=rscore
-# Link to communicate internally: curl localhost:5001/data?"patientid=1000&seconds=300&measurement=O2"
+# Link to communicate internally: curl localhost:5001/tdata?"patientid=1000&seconds=300&measurement=O2"
 
 app = Flask(__name__)
 
-x = dir(Patient)
-print(x)
-x = dir(Ventilator)
-print(x)
+mock = False
 
 patients = Patient.get_patients()
 
@@ -106,8 +103,9 @@ def get_patient_list():
     global patients
     global map_patients
     global serialize
+    global mock
     for p in map_patients_to_ventilator:
-        p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
+        p.set_severity(map_patients_to_ventilator[p].severity_score(mock)[0], mock)
         p.set_delta()
     patients_new = patients
     if sorting == 'rscore':
@@ -130,6 +128,7 @@ def get_patient_list():
 @app.route('/tdata')
 def get_tventilator_data():
     global ventilators
+    global mock
     ventilator_for_chris = []
     patientid = int(request.args.get('patientid'))
     measurement = request.args.get('measurement')
@@ -145,7 +144,7 @@ def get_tventilator_data():
     for timepoints in all_about_ventilator:
         timestamps.append(timepoints['time'])
         if measurement == 'O2':
-            if all_about_ventilator[0]["device_id"] == 4242:
+            if (all_about_ventilator[0]["device_id"] == 4242) & mock:
                 ventilator_for_chris.append(Ventilator.mock(float(timepoints['processed']['ExpiredO2']), timepoints['time']))
             else:
                 ventilator_for_chris.append(float(timepoints['processed']['ExpiredO2']))
@@ -167,7 +166,7 @@ def get_patient_by_id():
     patientid = int(request.args.get('patientid'))
     for p in patients:
         if p.id == patientid:
-            p.set_severity(map_patients_to_ventilator[p].severity_score()[0])
+            p.set_severity(map_patients_to_ventilator[p].severity_score(mock)[0])
             p.set_delta()
             return json.dumps(p, default=serialize)
     return 'patient not found'
@@ -193,6 +192,20 @@ def change_state():
             p.change_state()
             p.set_delta()
     return "changed state"
+
+
+@app.route('/startmock')
+def start_mocking():
+    global mock
+    mock = True
+    return "data is now mocked"
+
+@app.route('/endmock')
+def end_mocking():
+    global mock
+    mock = False
+    return "data is now not mocked"
+
 
 
 ## how to run in terminal

@@ -7,8 +7,10 @@ import random
 
 import requests
 
+
 def mock(value, timestamp):
-    return value*(np.sin(int(timestamp)*0.3) + 3) * 0.5
+    return random.uniform(60.0, 62.0)
+# return value*(np.sin(int(timestamp)*0.3) + 3) * 0.5
 
 class Ventilator:
     def __init__(self, id):
@@ -25,8 +27,7 @@ class Ventilator:
     #     json['processed']['ExpiredO2'] = json['processed']['ExpiredO2'] * a
     #     self.counter += 0.1
 
-
-    def severity_score(self):
+    def severity_score(self, mock):
         # Get the most recent entry of the ventilator data
         if len(self.data) > 0:
             last_entry = self.data[next(reversed(self.data))]
@@ -34,8 +35,8 @@ class Ventilator:
             MVe = int(last_entry['processed']['MVe'])
             ExpiredCO2 = int(last_entry['processed']['ExpiredCO2'])
             ExpiredO2 = int(last_entry['processed']['ExpiredO2'])
-            if self.id == 4242:
-                ExpiredO2 = mock(ExpiredO2 , last_timestamp)
+            if (self.id == 4242) & mock:
+                ExpiredO2 = mock(ExpiredO2, last_timestamp)
             frequency = int(last_entry['processed']['frequency'])
             # pressure = last_entry['processed']['pressure']
 
@@ -127,9 +128,8 @@ class Ventilator:
 
         return [score, criticalList]
 
-
-        #return random.randint(0, 2)
-        #return len(self.data)
+        # return random.randint(0, 2)
+        # return len(self.data)
 
     def get_last_seconds(self, number_of_sec):
         iter = reversed(self.data)
@@ -144,16 +144,15 @@ class Ventilator:
 ventilator_ids = [4242, 3089, 12693, 93, 586]
 
 if __name__ == "__main__":
-        v = Ventilator(1000)
-        for i in range(1):
-            sleep(0.5)
-            r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)
-            data = r.json()
+    v = Ventilator(1000)
+    for i in range(1):
+        sleep(0.5)
+        r = requests.get('http://api.theopenvent.com/exampledata/v2/data', verify=False)
+        data = r.json()
 
-            for key in data:
-                if data[key]['device_id'] == v.id:
-                    v.add_data(data[key])
+        for key in data:
+            if data[key]['device_id'] == v.id:
+                v.add_data(data[key])
 
-        test = v.severity_score()
-        print(test)
-
+    test = v.severity_score()
+    print(test)
