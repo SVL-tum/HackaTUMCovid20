@@ -13,7 +13,7 @@ For demonstration purposes a video of the app and its funtionalities is further 
   
   
   
-* Frontend Features:  
- * Screen 1:  
-  *  Overview of all Patients, RealTime Monitoring of Last Turned, SAPS and Sevirity Score (calculated by Backend)    
-  *    Buttons for turning patients and updating information on the Backend      
+* Frontend Features:    
+   * Screen 1:  
+    *  Overview of all Patients, RealTime Monitoring of Last Turned, SAPS and Sevirity Score (calculated by Backend)    
+    *  Buttons for turning patients and updating information on the Backend      
