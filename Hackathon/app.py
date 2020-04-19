@@ -18,7 +18,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-mock = False
+shouldmock = False
 
 patients = Patient.get_patients()
 
@@ -128,7 +128,7 @@ def get_patient_list():
 @app.route('/tdata')
 def get_tventilator_data():
     global ventilators
-    global mock
+    global shouldmock
     ventilator_for_chris = []
     patientid = int(request.args.get('patientid'))
     measurement = request.args.get('measurement')
@@ -144,7 +144,7 @@ def get_tventilator_data():
     for timepoints in all_about_ventilator:
         timestamps.append(timepoints['time'])
         if measurement == 'O2':
-            if (all_about_ventilator[0]["device_id"] == 4242) & mock:
+            if (all_about_ventilator[0]["device_id"] == 4242) & shouldmock:
                 ventilator_for_chris.append(Ventilator.mock(float(timepoints['processed']['ExpiredO2']), timepoints['time']))
             else:
                 ventilator_for_chris.append(float(timepoints['processed']['ExpiredO2']))
@@ -163,10 +163,11 @@ def get_tventilator_data():
 def get_patient_by_id():
     global patients
     global map_patients_to_ventilator
+    global shouldmock
     patientid = int(request.args.get('patientid'))
     for p in patients:
         if p.id == patientid:
-            p.set_severity(map_patients_to_ventilator[p].severity_score(mock)[0])
+            p.set_severity(map_patients_to_ventilator[p].severity_score(shouldmock)[0])
             p.set_delta()
             return json.dumps(p, default=serialize)
     return 'patient not found'
@@ -196,14 +197,14 @@ def change_state():
 
 @app.route('/startmock')
 def start_mocking():
-    global mock
-    mock = True
+    global shouldmock
+    shouldmock = True
     return "data is now mocked"
 
 @app.route('/endmock')
 def end_mocking():
-    global mock
-    mock = False
+    global shouldmock
+    shouldmock = False
     return "data is now not mocked"
 
 

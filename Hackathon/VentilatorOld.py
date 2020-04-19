@@ -9,7 +9,7 @@ import requests
 
 
 def mock(value, timestamp):
-    return random.uniform(60.0, 62.0)
+    return random.uniform(49.0, 52.0)
 # return value*(np.sin(int(timestamp)*0.3) + 3) * 0.5
 
 class Ventilator:
