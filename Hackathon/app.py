@@ -105,7 +105,7 @@ def get_patient_list():
     global serialize
     global mock
     for p in map_patients_to_ventilator:
-        p.set_severity(map_patients_to_ventilator[p].severity_score(mock)[0])
+        p.set_severity(map_patients_to_ventilator[p].severity_score(shouldmock)[0])
         p.set_delta()
     patients_new = patients
     if sorting == 'rscore':
