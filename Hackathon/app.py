@@ -145,7 +145,10 @@ def get_tventilator_data():
     for timepoints in all_about_ventilator:
         timestamps.append(timepoints['time'])
         if measurement == 'O2':
-            ventilator_for_chris.append(float(timepoints['processed']['ExpiredO2']))
+            if all_about_ventilator[0]["device_id"] == 4242:
+                ventilator_for_chris.append(Ventilator.mock(float(timepoints['processed']['ExpiredO2']), timepoints['time']))
+            else:
+                ventilator_for_chris.append(float(timepoints['processed']['ExpiredO2']))
         elif measurement == 'MVe':
             ventilator_for_chris.append(float(timepoints['processed']['MVe']))
         elif measurement == 'Co2':

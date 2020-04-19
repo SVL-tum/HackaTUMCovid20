@@ -7,6 +7,8 @@ import random
 
 import requests
 
+def mock(value, timestamp):
+    return value*(np.sin(int(timestamp)*0.3) + 3) * 0.5
 
 class Ventilator:
     def __init__(self, id):
@@ -17,15 +19,12 @@ class Ventilator:
     def add_data(self, json):
         self.data[json['time']] = json
 
-    @property
-    def data_mod(self):
-        return copy.deepcopy(data)
-
     # son = copy.deepcopy(json_s)
     # if self.id == 4242:
     #     a = (np.sin(self.counter) + 3) * 0.5
     #     json['processed']['ExpiredO2'] = json['processed']['ExpiredO2'] * a
     #     self.counter += 0.1
+
 
     def severity_score(self):
         # Get the most recent entry of the ventilator data
@@ -35,6 +34,8 @@ class Ventilator:
             MVe = int(last_entry['processed']['MVe'])
             ExpiredCO2 = int(last_entry['processed']['ExpiredCO2'])
             ExpiredO2 = int(last_entry['processed']['ExpiredO2'])
+            if self.id == 4242:
+                ExpiredO2 = mock(ExpiredO2 , last_timestamp)
             frequency = int(last_entry['processed']['frequency'])
             # pressure = last_entry['processed']['pressure']
 
@@ -60,12 +61,13 @@ class Ventilator:
             else:
                 b = 0
 
+            print(ExpiredO2)
             if ExpiredO2 < 16:
-                c = 1
+                c = 5
             elif ExpiredO2 > 50:
-                c = 1
+                c = 5
             else:
-                c = 0
+                c = 2
 
             if frequency < 10:
                 d = 3
@@ -116,7 +118,7 @@ class Ventilator:
                 h = 0
 
             score_total = a + b + c + d + e + f + g + h
-            if score_total <= 6:
+            if score_total <= 4:
                 score = 0
             elif score_total <= 8:
                 score = 1
