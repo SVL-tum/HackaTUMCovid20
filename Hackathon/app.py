@@ -85,8 +85,8 @@ def continous_update_of_ventilators():
         except Exception as ex:
             print(ex)
             for v in ventilators:
-                last = v.get_last_seconds(1)[0]
                 for diff in [-1,0,1]:
+                    last = v.get_last_seconds(1)[0]
                     current = copy.deepcopy(last)
                     current["time"] = int(time.time()+diff)
                     v.add_data(current)
@@ -145,7 +145,7 @@ def get_tventilator_data():
     for timepoints in all_about_ventilator:
         timestamps.append(timepoints['time'])
         if measurement == 'O2':
-            ventilator_for_chris.append(float(timepoints['raw']['O2']))
+            ventilator_for_chris.append(float(timepoints['processed']['ExpiredO2']))
         elif measurement == 'MVe':
             ventilator_for_chris.append(float(timepoints['processed']['MVe']))
         elif measurement == 'Co2':
@@ -155,32 +155,6 @@ def get_tventilator_data():
         else:
             return "Measure " + measurement + " not supported."
     return json.dumps({"timestamps": timestamps, "measurements": ventilator_for_chris})
-
-
-@app.route('/data')
-def get_ventilator_data():
-    global ventilators
-    ventilator_for_chris = []
-    patientid = int(request.args.get('patientid'))
-    measurement = request.args.get('measurement')
-    seconds = int(request.args.get('seconds'))
-    print(patientid, measurement, seconds)
-    all_about_ventilator = None
-    for p in map_patients_to_ventilator:
-        if p.id == patientid:
-            all_about_ventilator = map_patients_to_ventilator[p].get_last_seconds(seconds)
-    if all_about_ventilator is None:
-        return "Patient " + str(patientid) + " not found"
-    for timepoints in all_about_ventilator:
-        if measurement == 'O2':
-            ventilator_for_chris.append(timepoints['processed']['ExpiredO2'])
-        elif measurement == 'MVe':
-            ventilator_for_chris.append(float(timepoints['processed']['MVe']))
-        elif measurement == 'Co2':
-            ventilator_for_chris.append(float(timepoints['raw']['CO2']))
-        else:
-            return "Measure " + measurement + " not supported."
-    return json.dumps(ventilator_for_chris)
 
 
 @app.route('/patient_by_id')

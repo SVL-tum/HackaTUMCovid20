@@ -1,3 +1,4 @@
+import copy
 from collections import OrderedDict
 from time import sleep
 import numpy as np
@@ -14,15 +15,23 @@ class Ventilator:
         self.counter = 0
 
     def add_data(self, json):
-        #if self.id == 4242:
-         #   json['processed']['ExpiredO2'] = json['processed']['ExpiredO2']*(np.sin(self.counter)+3)*0.5
-          #  self.counter += 0.1
         self.data[json['time']] = json
+
+    @property
+    def data_mod(self):
+        return copy.deepcopy(data)
+
+    # son = copy.deepcopy(json_s)
+    # if self.id == 4242:
+    #     a = (np.sin(self.counter) + 3) * 0.5
+    #     json['processed']['ExpiredO2'] = json['processed']['ExpiredO2'] * a
+    #     self.counter += 0.1
 
     def severity_score(self):
         # Get the most recent entry of the ventilator data
         if len(self.data) > 0:
             last_entry = self.data[next(reversed(self.data))]
+            last_timestamp = next(reversed(self.data))
             MVe = int(last_entry['processed']['MVe'])
             ExpiredCO2 = int(last_entry['processed']['ExpiredCO2'])
             ExpiredO2 = int(last_entry['processed']['ExpiredO2'])
