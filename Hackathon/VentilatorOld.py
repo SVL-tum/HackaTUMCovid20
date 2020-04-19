@@ -9,7 +9,7 @@ import requests
 
 
 def mock(value, timestamp):
-    return random.uniform(59.0, 61.0)
+    return random.uniform(3.0, 7.0)
 # return value*(np.sin(int(timestamp)*0.3) + 3) * 0.5
 
 class Ventilator:
@@ -63,8 +63,8 @@ class Ventilator:
                 b = 0
 
 
-            if ExpiredO2 < 16:
-                c = 5
+            if ExpiredO2 < 5:
+                c = 20
             elif ExpiredO2 > 60:
                 c = 5
             else:
@@ -119,9 +119,9 @@ class Ventilator:
                 h = 0
 
             score_total = a + b + c + d + e + f + g + h
-            if score_total <= 4:
+            if score_total <= 6:
                 score = 0
-            elif score_total <= 9:
+            elif score_total <= 20:
                 score = 1
             else:
                 score = 2
