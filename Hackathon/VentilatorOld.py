@@ -27,7 +27,7 @@ class Ventilator:
     #     json['processed']['ExpiredO2'] = json['processed']['ExpiredO2'] * a
     #     self.counter += 0.1
 
-    def severity_score(self, mock):
+    def severity_score(self, shouldmock):
         # Get the most recent entry of the ventilator data
         if len(self.data) > 0:
             last_entry = self.data[next(reversed(self.data))]
@@ -35,7 +35,7 @@ class Ventilator:
             MVe = int(last_entry['processed']['MVe'])
             ExpiredCO2 = int(last_entry['processed']['ExpiredCO2'])
             ExpiredO2 = int(last_entry['processed']['ExpiredO2'])
-            if (self.id == 4242) & mock:
+            if (self.id == 4242) & shouldmock:
                 ExpiredO2 = mock(ExpiredO2, last_timestamp)
             frequency = int(last_entry['processed']['frequency'])
             # pressure = last_entry['processed']['pressure']
@@ -62,7 +62,7 @@ class Ventilator:
             else:
                 b = 0
 
-            print(ExpiredO2)
+
             if ExpiredO2 < 16:
                 c = 5
             elif ExpiredO2 > 50:
